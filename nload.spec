@@ -4,7 +4,7 @@
 #
 Name     : nload
 Version  : 8f92dc04fad283abdd2a4538cd4c2093d957d9da
-Release  : 2
+Release  : 3
 URL      : https://github.com/rolandriegel/nload/archive/8f92dc04fad283abdd2a4538cd4c2093d957d9da.tar.gz
 Source0  : https://github.com/rolandriegel/nload/archive/8f92dc04fad283abdd2a4538cd4c2093d957d9da.tar.gz
 Summary  : No detailed summary available
@@ -25,7 +25,6 @@ BuildRequires : pkgconfig(ncurses)
 Summary: bin components for the nload package.
 Group: Binaries
 Requires: nload-license = %{version}-%{release}
-Requires: nload-man = %{version}-%{release}
 
 %description bin
 bin components for the nload package.
@@ -49,28 +48,37 @@ man components for the nload package.
 
 %prep
 %setup -q -n nload-8f92dc04fad283abdd2a4538cd4c2093d957d9da
+cd %{_builddir}/nload-8f92dc04fad283abdd2a4538cd4c2093d957d9da
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1545958432
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1604100097
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %reconfigure --disable-static
 make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-make VERBOSE=1 V=1 %{?_smp_mflags} check
+make %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1545958432
+export SOURCE_DATE_EPOCH=1604100097
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/nload
-cp COPYING %{buildroot}/usr/share/package-licenses/nload/COPYING
+cp %{_builddir}/nload-8f92dc04fad283abdd2a4538cd4c2093d957d9da/COPYING %{buildroot}/usr/share/package-licenses/nload/2d29c273fda30310211bbf6a24127d589be09b6c
 %make_install
 
 %files
@@ -82,7 +90,7 @@ cp COPYING %{buildroot}/usr/share/package-licenses/nload/COPYING
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/nload/COPYING
+/usr/share/package-licenses/nload/2d29c273fda30310211bbf6a24127d589be09b6c
 
 %files man
 %defattr(0644,root,root,0755)
